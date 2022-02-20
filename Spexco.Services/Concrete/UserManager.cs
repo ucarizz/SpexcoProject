@@ -17,16 +17,11 @@ namespace Spexco.Services.Concrete
     {
 
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public UserManager(IUnitOfWork unitOfWork, IMapper mapper)
+
+        public UserManager(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
-        }
-        public Task<IDataResult<UserDto>> Delete(int UserId, string modifiedByName)
-        {
-            throw new NotImplementedException();
         }
 
         public Task<IDataResult<UserDto>> Get(int UserId)
@@ -34,39 +29,28 @@ namespace Spexco.Services.Concrete
             throw new NotImplementedException();
         }
 
-        public Task<IDataResult<UserListDto>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<IDataResult<UserListDto>> GetAllByNonDeleted()
+        public async Task<IDataResult<UserListDto>> GetAll(int currentPage = 1, int pageSize = 5, bool isAscending = false)
         {
-            throw new NotImplementedException();
-        }
+            var users = await _unitOfWork.Users.GetAllAsync(c => !c.IsDeleted && c.IsActive, c => c.Articles);
+            
+            var sortedUsers = isAscending ?
+                users.OrderBy(a => a.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList() :
+                users.OrderByDescending(a => a.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
 
-        public async Task<IDataResult<UserListDto>> GetAllByNonDeletedAndActive()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IDataResult<UserListDto>> GetAllByPagingAsync(int? categoryId, int currentPage = 1, int pageSize = 5, bool isAscending = false)
-        {
-            var users = await _unitOfWork.Users.GetAllAsync(null,c => !c.IsDeleted && c.IsActive, c => c.Articles);
             if (users.Count > -1)
             {
                 return new DataResult<UserListDto>(ResultStatus.Success, new UserListDto
                 {
                     Users = users,
+                    CurrentPage = currentPage,
+                    PageSize = pageSize,
+                    TotalCount = users.Count,
                     ResultStatus = ResultStatus.Success
 
                 });
             }
             return new DataResult<UserListDto>(ResultStatus.Error, "Kategori bulunamadı.", null);
-        }
-
-        public Task<IResult> HardDelete(int UserId)
-        {
-            throw new NotImplementedException();
         }
     }
 }

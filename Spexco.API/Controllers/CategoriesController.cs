@@ -21,11 +21,11 @@ namespace Spexco.API.Controllers
         [HttpGet("getall")]
         public IActionResult GetList(int currentPage = 1, int pageSize = 5)
         {
-            var result = _categoryService.GetAllByPagingAsync( currentPage, pageSize);
+            var result = _categoryService.GetAll( currentPage, pageSize);
 
             if (result.Result.ResultStatus == ResultStatus.Success )
             {
-                return Ok(result.Result.Data);
+                return Ok(result.Result);
             }
             else
             {
