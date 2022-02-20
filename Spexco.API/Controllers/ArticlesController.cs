@@ -18,9 +18,9 @@ namespace Spexco.API.Controllers
         }
 
         [HttpGet("getall")]
-        public IActionResult GetList(int currentPage=1,int pageSize=5)
+        public IActionResult GetList(int currentPage=1,int pageSize=5,bool isAscending=false)
         {
-            var result =  _articleService.GetAll(null,currentPage,pageSize);
+            var result =  _articleService.GetAll(null,currentPage,pageSize, isAscending);
 
             if (result.Result.ResultStatus == ResultStatus.Success)
             {

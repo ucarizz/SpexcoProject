@@ -45,9 +45,10 @@ namespace Spexco.Services.Concrete
 
         public async Task<IDataResult<CategoryListDto>> GetAll( int currentPage = 1, int pageSize = 5, bool isAscending = false)
         {
-            var categories =  await _unitOfWork.Categorires.GetAllAsync(a => a.IsActive && !a.IsDeleted);
-   
+            pageSize = pageSize > 20 ? 20 : pageSize;
 
+            var categories =  await _unitOfWork.Categorires.GetAllAsync(a => a.IsActive && !a.IsDeleted);
+  
             var sortedCategories = isAscending ? 
                 categories.OrderBy(a => a.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList() : 
                 categories.OrderByDescending(a => a.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
@@ -58,6 +59,7 @@ namespace Spexco.Services.Concrete
                 CurrentPage = currentPage,
                 PageSize = pageSize,
                 TotalCount = categories.Count,
+                isAscending = isAscending,
                 ResultStatus = ResultStatus.Success
 
             });

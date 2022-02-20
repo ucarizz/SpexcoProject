@@ -32,6 +32,8 @@ namespace Spexco.Services.Concrete
 
         public async Task<IDataResult<UserListDto>> GetAll(int currentPage = 1, int pageSize = 5, bool isAscending = false)
         {
+            pageSize = pageSize>20 ? 20:pageSize;
+
             var users = await _unitOfWork.Users.GetAllAsync(c => !c.IsDeleted && c.IsActive, c => c.Articles);
             
             var sortedUsers = isAscending ?
@@ -46,6 +48,7 @@ namespace Spexco.Services.Concrete
                     CurrentPage = currentPage,
                     PageSize = pageSize,
                     TotalCount = users.Count,
+                    isAscending= isAscending,
                     ResultStatus = ResultStatus.Success
 
                 });
