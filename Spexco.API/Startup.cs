@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Spexco.Services.AutoMapper.Profiles;
 using Spexco.Services.Extensions;
 using AutoMapper;
 using System;
@@ -31,7 +30,6 @@ namespace Spexco.API
         {
 
             services.AddControllers().AddNewtonsoftJson(opt=>opt.SerializerSettings.ReferenceLoopHandling=Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-            services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile));
 
             services.LoadMyServices();
             services.AddSwaggerGen(c =>
